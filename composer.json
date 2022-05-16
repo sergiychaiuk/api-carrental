@@ -4,5 +4,8 @@
       "App\\": "app",
       "Core\\": "core"
     }
+  },
+  "require": {
+    "ext-mysqli": "*"
   }
 }
