@@ -17,4 +17,43 @@ class CarCategoryController
 
         echo json_encode($carType);
     }
+
+    static public function store($request)
+    {
+        $carCategory = new CarCategory($request['data']);
+
+        $res = $carCategory->create();
+
+        echo json_encode([
+            'status' => $res
+        ]);
+    }
+
+    static public function update($request)
+    {
+        $id = json_decode($request['params'])->id;
+
+        $carCategory = CarCategory::find($id);
+
+        $carCategory->mergeAttributes($request['data']);
+
+        $res = $carCategory->update();
+
+        echo json_encode([
+            'status' => $res
+        ]);
+    }
+
+    static public function delete($request)
+    {
+        $id = json_decode($request['params'])->id;
+
+        $carCategory = CarCategory::find($id);
+
+        $res = $carCategory->delete();
+
+        echo json_encode([
+            'status' => $res
+        ]);
+    }
 }

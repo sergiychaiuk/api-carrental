@@ -89,4 +89,80 @@ class Database
 
         return $object;
     }
+
+    public function create(): bool
+    {
+        $attributes = $this->sanitizedAttributes();
+
+        $sql = "insert into " . static::$table_name . " (";
+        $sql .= join(', ', array_keys($attributes));
+        $sql .= ") values ('";
+        $sql .= join("', '", array_values($attributes));
+        $sql .= "')";
+
+        $result = self::$database->query($sql);
+
+        if ($result) {
+            $this->id = self::$database->insert_id;
+        }
+
+        return $result;
+    }
+
+    public function update()
+    {
+        $attributes = $this->sanitizedAttributes();
+        $attribute_pairs = [];
+
+        foreach ($attributes as $key => $value) {
+            $attribute_pairs[] = "{$key}='{$value}'";
+        }
+
+        $sql = "update " . static::$table_name . " set ";
+        $sql .= join(', ', $attribute_pairs);
+        $sql .= "where id = '" . self::$database->escape_string($this->id) . "' ";
+        $sql .= "limit 1";
+
+        return self::$database->query($sql);
+    }
+
+    public function delete()
+    {
+        $sql = "delete from " . static::$table_name . " ";
+        $sql .= "where id = '" . self::$database->escape_string($this->id) . "' ";
+        $sql .= "limit 1";
+
+        return self::$database->query($sql);
+    }
+
+    public function attributes(): array
+    {
+        $attributes = [];
+
+        foreach (static::$db_columns as $column) {
+            if ($column == 'id') { continue; }
+            $attributes[$column] = $this->$column;
+        }
+
+        return $attributes;
+    }
+
+    protected function sanitizedAttributes(): array
+    {
+        $sanitized = [];
+
+        foreach ($this->attributes() as $key => $value) {
+            $sanitized[$key] = self::$database->escape_string($value);
+        }
+
+        return $sanitized;
+    }
+
+    public function mergeAttributes($args = []) {
+        foreach ($args as $key => $value) {
+            if (property_exists($this, $key) && !is_null($value)) {
+                $this->$key = $value;
+            }
+        }
+    }
 }

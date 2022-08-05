@@ -12,18 +12,24 @@ class Customer extends Database
         'id',
         'name',
         'surname',
-        'idCustomerCategory'
+        'patronymic',
+        'idCustomerCategory',
+        'phone'
     ];
 
     public $id;
     public $name;
     public $surname;
+    public $patronymic;
     public $idCustomerCategory;
+    public $phone;
 
     public function __construct($args = []) {
         $this->name =  $args['name'] ?? '';
         $this->surname =  $args['surname'] ?? '';
+        $this->patronymic =  $args['patronymic'] ?? '';
         $this->idCustomerCategory =  $args['idCustomerCategory'] ?? '';
+        $this->phone =  $args['phone'] ?? '';
     }
 
     public function customerCategory()

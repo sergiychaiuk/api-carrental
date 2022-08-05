@@ -25,4 +25,43 @@ class CustomerController
 
         echo json_encode($customer);
     }
+
+    static public function store($request)
+    {
+        $customer = new Customer($request['data']);
+
+        $res = $customer->create();
+
+        echo json_encode([
+            'status' => $res
+        ]);
+    }
+
+    static public function update($request)
+    {
+        $id = json_decode($request['params'])->id;
+
+        $customer = Customer::find($id);
+
+        $customer->mergeAttributes($request['data']);
+
+        $res = $customer->update();
+
+        echo json_encode([
+            'status' => $res
+        ]);
+    }
+
+    static public function delete($request)
+    {
+        $id = json_decode($request['params'])->id;
+
+        $customer = Customer::find($id);
+
+        $res = $customer->delete();
+
+        echo json_encode([
+            'status' => $res
+        ]);
+    }
 }

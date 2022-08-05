@@ -38,6 +38,19 @@ class Router
         }
     }
 
+    static public function delete($uri, $callback)
+    {
+        $pattern = self::createPattern($uri);
+
+        if (preg_match($pattern, $_SERVER['REQUEST_URI'], $params) && $_SERVER['REQUEST_METHOD'] === 'DELETE') {
+            $params = self::clearParams($params);
+
+            $request['params'] = json_encode($params);
+
+            call_user_func($callback, $request);
+        }
+    }
+
     static public function createPattern($uri): string
     {
         return '#^' . preg_replace('#/:([^/]+)#', '/(?<$1>[^/]+)', $uri) . '/?$#';

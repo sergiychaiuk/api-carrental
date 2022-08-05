@@ -27,4 +27,43 @@ class ReservationController
 
         echo json_encode($reservation);
     }
+
+    static public function store($request)
+    {
+        $reservation = new Reservation($request['data']);
+
+        $res = $reservation->create();
+
+        echo json_encode([
+            'status' => $res
+        ]);
+    }
+
+    static public function update($request)
+    {
+        $id = json_decode($request['params'])->id;
+
+        $reservation = Reservation::find($id);
+
+        $reservation->mergeAttributes($request['data']);
+
+        $res = $reservation->update();
+
+        echo json_encode([
+            'status' => $res
+        ]);
+    }
+
+    static public function delete($request)
+    {
+        $id = json_decode($request['params'])->id;
+
+        $reservation = Reservation::find($id);
+
+        $res = $reservation->delete();
+
+        echo json_encode([
+            'status' => $res
+        ]);
+    }
 }
